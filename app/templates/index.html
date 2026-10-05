@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Viseur — rencontre vidéo</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">viseur<span>.</span></a>
+    <span class="badge">18+ · Respect · Consentement</span>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <p class="eyebrow">RENCONTRES VIDÉO ALÉATOIRES</p>
+      <h1>Une nouvelle<br>conversation commence ici.</h1>
+      <p class="description">
+        Échangez en vidéo avec des adultes, dans un espace où chacun
+        peut arrêter la conversation à tout moment.
+      </p>
+      <p class="notice">
+         Prototype de développement — appels réservés aux essais locaux.
+      </p>
+    </section>
+
+    <section class="video-card" aria-label="Aperçu vidéo">
+      <video id="local-video" autoplay muted playsinline hidden></video>
+      <video id="remote-video" autoplay playsinline hidden></video>
+      <div class="video-placeholder" id="camera-placeholder">
+        <div class="camera-icon">◎</div>
+        <p id="camera-message">Votre aperçu vidéo apparaîtra ici</p>
+        <button class="camera-button" id="camera-button" type="button">
+          Activer ma caméra
+        </button>
+      </div>
+      <div class="video-footer">
+        <span><i></i> Aperçu local</span>
+        <button class="control-button" id="mic-button" type="button">
+          Activer le micro
+        </button>
+        <button class="control-button" id="stop-button" type="button">
+          Quitter l’aperçu
+        </button>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button class="primary" id="match-button" type="button">Chercher une rencontre</button>
+             <p id="match-status">Active la caméra et le micro pour commencer.</p>
+    </section>
+
+    <footer>
+      <span>Respecte les autres participants et leur consentement.</span>
+      <button class="report-button" id="report-button" type="button">
+        Signaler un problème
+      </button>
+    </footer>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
