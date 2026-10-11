@@ -1,18 +1,43 @@
 import json
 import asyncio
+import os
 from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 import sqlite3
 import uuid
 from typing import Literal
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import urlopen
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 app = FastAPI(title="Viseur")
+
+@app.get("/api/turn-credentials")
+def turn_credentials():
+    api_key = os.environ.get("METERED_TURN_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=503, detail="TURN non configuré.")
+
+    query = urlencode({"apiKey": api_key})
+    url = f"https://viseur.metered.live/api/v1/turn/credentials?{query}"
+
+    try:
+        with urlopen(url, timeout=10) as response:
+            ice_servers = json.loads(response.read())
+    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError):
+        raise HTTPException(status_code=502, detail="Service TURN indisponible.")
+
+    if not isinstance(ice_servers, list) or not ice_servers:
+        raise HTTPException(status_code=502, detail="Réponse TURN invalide.")
+
+    return {"iceServers": ice_servers}
+
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"

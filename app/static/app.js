@@ -133,9 +133,19 @@ async function startPeerConnection(initiator) {
     throw new Error("Active la caméra et le micro avant de chercher.");
   }
 
+  const turnResponse = await fetch("/api/turn-credentials");
+  if (!turnResponse.ok) {
+    throw new Error("Impossible de récupérer la configuration TURN.");
+  }
+
+  const turnConfig = await turnResponse.json();
+  if (!Array.isArray(turnConfig.iceServers) || turnConfig.iceServers.length === 0) {
+    throw new Error("Aucun relais TURN n’a été reçu.");
+  }
+
   const connection = new RTCPeerConnection({
-    iceServers: [],
-    iceTransportPolicy: "all",
+    iceServers: turnConfig.iceServers,
+    iceTransportPolicy: "relay",
   });
 
   const outgoingStream = new MediaStream([
